@@ -1,15 +1,34 @@
-## Put comments here that give an overall description of what your
-## functions do
+## cachematrix.R caches the inverse of a matrix for future use by applying
+## concepts of lexical scoping
 
-## Write a short comment describing this function
+## makeCacheMatrix() creates a vector containing functions to set and return the
+## original matrix and also its inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-
+makeCacheMatrix <- function(m) {
+  im <- NULL
+  set <- function(p) {
+    m <<- p
+    im <<- NULL
+  }
+  get <- function() m
+  setinverse <- function(inv) im <<- inv 
+  getinverse <- function() im
+  list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## CacheSolve() tries to get the inverse of the matrix cached before calculating
+## it
 
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cacheSolve <- function(m) {
+  im <- m$getinverse()
+  if(!is.null(im)) {
+    print("Getting cached data")
+    return(im)
+  }
+  data <- m$get()
+  im <- solve(data)
+  m$setinverse(im)
+  im
+  
 }
